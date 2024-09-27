@@ -20,4 +20,12 @@ router.post('/', async function (req, res, next) {
     }    
 });
 
+router.get('/', async function (req, res, next) {
+    try {
+        res.json("YA ESTOY DESDE EL ADD")
+    } catch (error) {
+        res.json(error)
+    }    
+});
+
 module.exports = router
