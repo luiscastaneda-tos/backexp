@@ -1,10 +1,18 @@
 const express = require("express"),
+    cors = require("cors"),
     bodyParser = require("body-parser"),
     database = require("./routes/database"),
     app = express(),
     port = process.env.PORT || 3000;
 
+
+app.use(cors({
+    origin: [
+        "http://localhost:5500",
+        "https://expoemprendealondra.github.io/Evento/"]
+}))
 app.use(bodyParser.json());
+app.use(express.json())
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get('/', async function(req, res){
