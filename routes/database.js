@@ -7,7 +7,7 @@ router.post('/', async function (req, res, next) {
         res.json(await modelo.create(req.body))
     } catch (error) {
         if(error.errno == 1062){
-            res.json({
+            res.status(400).json({
                 error : 1062,
                 message: "Ya tienes una suscripción activa con este correo. Si necesitas ayuda, no dudes en contactarnos."
             })
