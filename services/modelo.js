@@ -1,44 +1,54 @@
 const db = require("./db")
 
 async function create(body) {
-    let rows;
-    rows = await db.query(
-        `INSERT INTO Anuncios (
-        nombre, 
-        apellido, 
-        correo, 
-        telefono, 
-        codigo_postal, 
-        ciudad, 
-        anuncio, 
-        anuncio_otro, 
-        objetivo, 
-        dia)
-        VALUES (
-        "${body.nombre}", 
-        "${body.apellido}", 
-        "${body.correo}", 
-        "${body.telefono}", 
-        "${body.codigo_postal}", 
-        "${body.ciudad}", 
-        "${body.anuncio}", 
-        "${body.anuncio_otro}", 
-        "${body.objetivo}", 
-        "${body.dia}"
-        );`
-    );
+    try {
+        let rows;
+        rows = await db.query(
+            `INSERT INTO Concurso (id, nombres, apellidos, folio, correo, telefono, codigo_postal, ciudad, sucursal) 
+            Values (?, ?, ?, ?, ?, ?, ?, ?, ?);`, [body.id, body.nombres, body.apellidos, body.folio, body.correo, body.telefono, body.codigo_postal, body.ciudad, body.sucursal]);
 
-    let message = "Error al crear el objeto"
-    if (rows.affectedRows) {
-        message = "Creado con exito"
+        let message = "Se registro correctamente, recuerda guardar tu folio, ya que si ganas deberas mostrarlo para obtener tu premio"
+        return {
+            error: false,
+            message
+        }
+    } catch (error) {
+        if (error.errno == 1062) {
+            return {
+                error: true,
+                code: 1062,
+                message: "Parece que ya existe un registro con ese folio, si no has registrado ese folio vuelve a intentar registrar el folio"
+            }
+        } else {
+            return {
+                error: true,
+                code: error.errno,
+                message: "Ha sucedido un error, intentalo de nuevo mas tarde y manda captura de este mensaje a nuestras redes sociales CODIGO ERROR: " + error.errno
+            }
+        }
     }
-    return {
-        ok: true,
-        message
-    }
+}
 
+async function read({ id_folio }) {
+    try {
+        let rows = await db.query("select * from Concurso where folio = ?;", [id_folio])
+    
+        return {
+            error: false,
+            data: rows,
+            message: "Se encontraron registros"
+        }
+    } catch (error) {
+        return {
+            data: error,
+            error: true,
+            code: error.errno,
+            message: "Ha sucedido un error, intentalo de nuevo mas tarde y manda captura de este mensaje a nuestras redes sociales CODIGO ERROR: " + error.errno
+        }    
+    }
 }
 
 module.exports = {
-    create
+    create,
+    read
 }

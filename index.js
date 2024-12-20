@@ -20,7 +20,7 @@ app.get('/', async function(req, res){
     }
 });
 
-app.use('/add', database);
+app.use('/db', database);
 
 app.use((err, req, res, next)=>{
     const statuscode = err.statuscode || 500;
