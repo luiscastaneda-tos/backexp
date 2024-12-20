@@ -10,7 +10,8 @@ async function create(body) {
         let message = "Se registro correctamente, recuerda guardar tu folio, ya que si ganas deberas mostrarlo para obtener tu premio"
         return {
             error: false,
-            message
+            message,
+            folio: body.folio
         }
     } catch (error) {
         console.log(error)
