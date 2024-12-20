@@ -2,10 +2,10 @@ const db = require("./db")
 
 async function create(body) {
     try {
-        let rows;
-        rows = await db.query(
+        let params = [body.id, body.nombres, body.apellidos, body.folio, body.correo, body.telefono, body.codigo_postal, body.ciudad, body.sucursal]
+        let rows = await db.query(
             `INSERT INTO Concurso (id, nombres, apellidos, folio, correo, telefono, codigo_postal, ciudad, sucursal) 
-            Values (?, ?, ?, ?, ?, ?, ?, ?, ?);`, [body.id, body.nombres, body.apellidos, body.folio, body.correo, body.telefono, body.codigo_postal, body.ciudad, body.sucursal]);
+            Values (?, ?, ?, ?, ?, ?, ?, ?, ?);`, params);
 
         let message = "Se registro correctamente, recuerda guardar tu folio, ya que si ganas deberas mostrarlo para obtener tu premio"
         return {
@@ -13,6 +13,7 @@ async function create(body) {
             message
         }
     } catch (error) {
+        console.log(error)
         if (error.errno == 1062) {
             return {
                 error: true,
@@ -39,6 +40,7 @@ async function read({ id_folio }) {
             message: "Se encontraron registros"
         }
     } catch (error) {
+        console.log(error)
         return {
             data: error,
             error: true,
